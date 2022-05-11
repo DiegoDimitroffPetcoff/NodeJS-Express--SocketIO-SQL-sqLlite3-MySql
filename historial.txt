@@ -1,1 +1,0 @@
-[{"author":"diego@hotmail.com","text":"Hola","id":1},{"author":"sofia@hotmail.com","text":"Hola!!!!","id":2},{"author":"d@hotmail.com","text":"SIIII","id":3},{"author":"Diego@hotmail","text":"hola","id":4},{"author":"askdja@alsdj.com","text":"HOLAAA","id":5},{"author":"A@H","text":"ALSDAKLJS","id":6}]
