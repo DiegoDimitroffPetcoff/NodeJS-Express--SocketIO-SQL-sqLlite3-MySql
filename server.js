@@ -3,7 +3,8 @@ const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
 const fs = require("fs");
 
-const {Productos} = require('./src/models/productosM');
+const { Productos } = require("./src/models/productosM");
+const { Chat } = require("./chatM");
 
 const { knex } = require("./src/options/mariaDB");
 const { knexSqLite3 } = require("./src/options/sqLite3");
@@ -49,73 +50,64 @@ const upload = multer({ storage: storage });
 
 // _________________________________________________________________________
 class Contenedor extends Productos {
-  
+  // getChat = (knexSqLite) => {
+  //   return knexSqLite("Historial")
+  //     .select("*")
+  //     .then((result) => {
+  //       // console.log(result);
+  //       return result;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+  saveChat(knexSqLite3, x) {
+    // si no existe tabla tiene que pasar esto
+    // const createTable = async (knex) => {
+    //   await knexSqLite3.schema.createTable("Historial", (table) => {
+    //     table.integer("id").primary();
+    //     table.string("author");
+    //     table.string("text");
+    //   });
+    // };
+    // si existe tabla debe suceder esto:
 
-    getChat = (knexSqLite) => {
-      return knexSqLite("Historial")
-        .select("*")
+    x.forEach((element) =>
+      knexSqLite3("Historial")
+        .insert({ author: element.author, text: element.text })
         .then((result) => {
           // console.log(result);
           return result;
         })
         .catch((err) => {
           console.log(err);
-        });
-    };
-    saveChat(knexSqLite3, x) {
-      // si no existe tabla tiene que pasar esto
-      // const createTable = async (knex) => {
-      //   await knexSqLite3.schema.createTable("Historial", (table) => {
-      //     table.integer("id").primary();
-      //     table.string("author");
-      //     table.string("text");
-      //   });
-      // };
-      // si existe tabla debe suceder esto:
+        })
+    );
+  }
 
-      x.forEach((element) =>
-        knexSqLite3("Historial")
-          .insert({ author: element.author, text: element.text })
-          .then((result) => {
-            // console.log(result);
-            return result;
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-      );
-    }
+  insertProducts = async (knex, x) => {
+    console.log(x);
 
-    insertProducts = async (knex, x) => {
-      console.log(x);
+    let array = [];
+    array.push(x);
 
-      let array = [];
-      array.push(x);
-
-      array.forEach((element) =>
-        knex("productos")
-          .insert({ title: element.title, price: element.price })
-          .then((result) => {
-            console.log(result);
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-      );
+    array.forEach((element) =>
+      knex("productos")
+        .insert({ title: element.title, price: element.price })
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    );
   };
-
 }
- // __________________________________________________________________________
+// __________________________________________________________________________
 
 const contenedor = new Contenedor();
 
-
-
-
-
-
-
-
+const chatHistorial = new Chat();
 
 // __________________________________________________________________________
 io.on("connection", async (socket) => {
@@ -131,13 +123,12 @@ io.on("connection", async (socket) => {
 
 io.on("connection", async (socket) => {
   console.log("Usuario conectado al Chat");
-  let chat = await contenedor.getChat(knexSqLite3);
+  let chat = await chatHistorial.get(knexSqLite3);
   socket.emit("chat", chat);
   socket.on("newChat", (data) => {
     chat.push(data);
     contenedor.saveChat(knexSqLite3, chat);
     io.sockets.emit("chat", chat);
-    
   });
 });
 

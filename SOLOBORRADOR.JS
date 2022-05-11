@@ -1,5 +1,6 @@
-const { knex } = require("./options/mariaDB");
-const { knexSqLite3 } = require("./options/sqLite3");
+const {Container} = require('./src/models/container');
+const { knex } = require("./src/options/mariaDB");
+const { knexSqLite3 } = require("./src/options/sqLite3");
 
 insertProducts = (knex, x) => {
   console.log(x);
@@ -34,7 +35,7 @@ const createTable = async (knex) => {
 // createTable(knexSqLite3)
 
 const getProducts = (knexSqLite) => {
-  knexSqLite("Historial")
+  return knexSqLite("Historial")
     .select("*")
     .then((result) => {
       console.log(result);
@@ -45,7 +46,40 @@ const getProducts = (knexSqLite) => {
 };
 
 // getProducts(knexMysql);
-getProducts(knexSqLite3);
-console.log(getProducts(knexSqLite3));
+// getProducts(knexSqLite3);
+// console.log(getProducts(knexSqLite3));
 
-module.exports = { insertProducts };
+
+
+
+
+
+
+
+
+
+
+class Chat extends Container {
+  constructor(){
+      super('Historial')
+  }
+}
+
+const chatHistorial = new Chat()
+chatHistorial.get (knexSqLite3);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// module.exports = { insertProducts };

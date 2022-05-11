@@ -11,7 +11,7 @@ class Container {
          return sql(this.fileName)
           .select("*")
           .then((result) => {
-            // console.log(result);
+            console.log(result);
             return result;
           })
           .catch((err) => {
