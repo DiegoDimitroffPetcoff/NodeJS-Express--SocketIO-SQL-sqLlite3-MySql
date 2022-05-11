@@ -33,25 +33,19 @@ const createTable = async (knex) => {
 // createTable(knex);
 // createTable(knexSqLite3)
 
-
-
-
-
-
-
-
 const getProducts = (knexSqLite) => {
-  knexSqLite('Historial').select('*')
-  .then((result) => {
+  knexSqLite("Historial")
+    .select("*")
+    .then((result) => {
       console.log(result);
-  }).catch((err) => {
+    })
+    .catch((err) => {
       console.log(err);
-  });
-}
+    });
+};
 
 // getProducts(knexMysql);
- getProducts(knexSqLite3);
- console.log(getProducts(knexSqLite3));
-
+getProducts(knexSqLite3);
+console.log(getProducts(knexSqLite3));
 
 module.exports = { insertProducts };
